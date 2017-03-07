@@ -8,9 +8,13 @@
 
 import smbus
 import time
+import matplotlib.pyplot as plt
 
 # Get I2C bus
 bus = smbus.SMBus(1)
+twodp = []
+threedp = []
+fourdp = []
 
 # BMP280 address, 0x76(118)
 for i in range(11):
@@ -100,6 +104,10 @@ for i in range(11):
     # Output data to screen
     #print "Temperature in Celsius : %.2f C" %cTemp
     #print "Temperature in Fahrenheit : %.2f F" %fTemp
-    print "Pressure (2dp): %.2f hPa " %pressure
-    print "Pressure (3dp): %.3f hPa " %pressure
-    print "Pressure (4dp): %.4f hPa " %pressure
+    twodp.append(round(pressure, 2))
+    threedp.append(round(pressure, 3))
+    fourdp.append(round(pressure, 4))
+time = [0.5*(i+1) for i in range(10)]
+plt.plot(time, twodp)
+plt.show()
+
