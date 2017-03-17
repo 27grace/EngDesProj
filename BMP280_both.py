@@ -103,7 +103,7 @@ while True:
     bus.write_byte_data(0x76, 0xF5, 0xA0)
     bus.write_byte_data(0x77, 0xF5, 0xA0)
 
-    time.sleep(0.5)
+    time.sleep(0.1)
 
     # BMP280 address, 0x76(118)
     # Read data back from 0xF7(247), 8 bytes
@@ -121,6 +121,7 @@ while True:
 
      #---------------------CALCULATING FLOWRATE ----------------------
     import math 
+    flowrate_list =[]
 
     delta_p = abs(p2-p1)*10
     print "Change in pressure: %.4f Pa" %delta_p
@@ -132,8 +133,10 @@ while True:
     v1 = math.sqrt((2*delta_p)/(density*(((a1/a2)**2)-1)))
     #print "initial velocity: %.4f m/s" %v1
     f1 = v1*a1 # intial flowrate 
+    flowrate_list.append(f1)
     print "flowrate: %.4f m^3/s" %f1
     time_elapsed = time.time() - tic
     print "time: %.3f s" %time_elapsed
+    print flowrate_list
 
 
