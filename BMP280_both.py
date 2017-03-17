@@ -56,33 +56,6 @@ def convertDataPressure(b1):
     if dig_P9 > 32767 :
         dig_P9 -= 65536
     return dig_P1, dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9
-    
-dig_T1a, dig_T2a, dig_T3a = convertDataTemp(b1) 
-dig_T1b, dig_T2b, dig_T3b = convertDataTemp(b2) 
-dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a = convertDataPressure(b1) 
-dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b = convertDataPressure(b2) 
- 
-
-# BMP280 address, 0x76(118)
-# Select Control measurement register, 0xF4(244)
-#		0x27(39)	Pressure and Temperature Oversampling rate = 1
-#					Normal mode
-bus.write_byte_data(0x76, 0xF4, 0x27)
-bus.write_byte_data(0x77, 0xF4, 0x27)
-# BMP280 address, 0x76(118)
-# Select Configuration register, 0xF5(245)
-#		0xA0(00)	Stand_by time = 1000 ms
-bus.write_byte_data(0x76, 0xF5, 0xA0)
-bus.write_byte_data(0x77, 0xF5, 0xA0)
-
-time.sleep(0.5)
-
-# BMP280 address, 0x76(118)
-# Read data back from 0xF7(247), 8 bytes
-# Pressure MSB, Pressure LSB, Pressure xLSB, Temperature MSB, Temperature LSB
-# Temperature xLSB, Humidity MSB, Humidity LSB
-data1 = bus.read_i2c_block_data(0x76, 0xF7, 8)
-data2 = bus.read_i2c_block_data(0x77, 0xF7, 8)
 
 def convertBitsNOffsets(data, dig_T1, dig_T2, dig_T3, dig_P1, dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9):
     # Convert pressure and temperature data to 19-bits
@@ -110,25 +83,57 @@ def convertBitsNOffsets(data, dig_T1, dig_T2, dig_T3, dig_P1, dig_P2, dig_P3, di
     pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100
     return pressure
 
-p1 = convertBitsNOffsets(data1, dig_T1a, dig_T2a, dig_T3a, dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a)
-p2 = convertBitsNOffsets(data2, dig_T1b, dig_T2b, dig_T3b, dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b)
+tic = time.time() #start time
 
-print "Sensor 1 Pressure: %.4f hPa " %p1
-print "Sensor 2 Pressure: %.4f hPa " %p2
+while True:
+    dig_T1a, dig_T2a, dig_T3a = convertDataTemp(b1) 
+    dig_T1b, dig_T2b, dig_T3b = convertDataTemp(b2) 
+    dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a = convertDataPressure(b1) 
+    dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b = convertDataPressure(b2) 
 
- #---------------------CALCULATING FLOWRATE ----------------------
-import math 
+    # BMP280 address, 0x76(118)
+    # Select Control measurement register, 0xF4(244)
+    #		0x27(39)	Pressure and Temperature Oversampling rate = 1
+    #					Normal mode
+    bus.write_byte_data(0x76, 0xF4, 0x27)
+    bus.write_byte_data(0x77, 0xF4, 0x27)
+    # BMP280 address, 0x76(118)
+    # Select Configuration register, 0xF5(245)
+    #		0xA0(00)	Stand_by time = 1000 ms
+    bus.write_byte_data(0x76, 0xF5, 0xA0)
+    bus.write_byte_data(0x77, 0xF5, 0xA0)
 
-delta_p = abs(p2-p1)*10
-print "Change in pressure: %.4f Pa" %delta_p
-density = 1.15 #density of air @ 35C
-d1 = 0.028
-d2 = 0.0105 
-a1 = (d1/2)**2*math.pi
-a2 = (d2/2)**2*math.pi
-v1 = math.sqrt((2*delta_p)/(density*(((a1/a2)**2)-1)))
-print "initial velocity: %.4f m/s" %v1
-f1 = v1*a1 # intial flowrate 
-print "flowrate: %.4f m^3/s" %f1
+    time.sleep(0.5)
+
+    # BMP280 address, 0x76(118)
+    # Read data back from 0xF7(247), 8 bytes
+    # Pressure MSB, Pressure LSB, Pressure xLSB, Temperature MSB, Temperature LSB
+    # Temperature xLSB, Humidity MSB, Humidity LSB
+    data1 = bus.read_i2c_block_data(0x76, 0xF7, 8)
+    data2 = bus.read_i2c_block_data(0x77, 0xF7, 8)
+
+    p1 = convertBitsNOffsets(data1, dig_T1a, dig_T2a, dig_T3a, dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a)
+    p2 = convertBitsNOffsets(data2, dig_T1b, dig_T2b, dig_T3b, dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b)
+
+    print "Sensor 1 Pressure: %.4f hPa " %p1
+    print "Sensor 2 Pressure: %.4f hPa " %p2
+    toc = time.time()
+
+     #---------------------CALCULATING FLOWRATE ----------------------
+    import math 
+
+    delta_p = abs(p2-p1)*10
+    print "Change in pressure: %.4f Pa" %delta_p
+    density = 1.15 #density of air @ 35C
+    d1 = 0.028
+    d2 = 0.0105 
+    a1 = (d1/2)**2*math.pi
+    a2 = (d2/2)**2*math.pi
+    v1 = math.sqrt((2*delta_p)/(density*(((a1/a2)**2)-1)))
+    #print "initial velocity: %.4f m/s" %v1
+    f1 = v1*a1 # intial flowrate 
+    print "flowrate: %.4f m^3/s" %f1
+    time_elapsed = time.time() - tic
+    print "time: %.3f s" %time_elapsed
 
 
