@@ -88,7 +88,6 @@ def convertBitsNOffsets(data, dig_T1, dig_T2, dig_T3, dig_P1, dig_P2, dig_P3, di
     # Convert pressure and temperature data to 19-bits
     adc_p = ((data[0] * 65536) + (data[1] * 256) + (data[2] & 0xF0)) / 16
     adc_t = ((data[3] * 65536) + (data[4] * 256) + (data[5] & 0xF0)) / 16
-    return adc_p, adc_t
 
     # Temperature offset calculations
     var1 = ((adc_t) / 16384.0 - (dig_T1) / 1024.0) * (dig_T2)
@@ -114,8 +113,8 @@ def convertBitsNOffsets(data, dig_T1, dig_T2, dig_T3, dig_P1, dig_P2, dig_P3, di
 p1 = convertBitsNOffsets(data1, dig_T1a, dig_T2a, dig_T3a, dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a)
 p2 = convertBitsNOffsets(data2, dig_T1b, dig_T2b, dig_T3b, dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b)
 
-print "Sensor 1 Pressure: %.4f hPa " %p1
-print "Sensor 2 Pressure: %.4f hPa " %p2
+print "Sensor 1 Pressure: %.4f hPa ", p1
+print "Sensor 2 Pressure: %.4f hPa "p2
 
  #---------------------CALCULATING FLOWRATE ----------------------
 import math 
