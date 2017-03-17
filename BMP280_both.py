@@ -188,7 +188,17 @@ p2 = pressure
 print "Sensor 2 Pressure: %.4f hPa " %pressure
 
  #---------------------CALCULATING FLOWRATE ----------------------
-delta_p = abs(p2-p1)
-print "Change in pressure: %.4f hPa" %delta_p
+import math 
+
+delta_p = abs(p2-p1)*10
+print "Change in pressure: %.4f Pa" %delta_p
+density = 1.15 #density of air @ 35C
+d1 = 0.028
+d2 = 0.0105 
+a1 = (d1/2)**2*math.pi
+a2 = (d2/2)**2*math.pi
+v1 = math.sqrt((2*delta_p)/(density*(((a1/a2)**2)-1)))
+print "v1: %.4f hPa" %v1
+f1 = v1*a1 # intial flowrate 
 
 
