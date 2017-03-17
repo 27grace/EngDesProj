@@ -113,8 +113,8 @@ def convertBitsNOffsets(data, dig_T1, dig_T2, dig_T3, dig_P1, dig_P2, dig_P3, di
 p1 = convertBitsNOffsets(data1, dig_T1a, dig_T2a, dig_T3a, dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a)
 p2 = convertBitsNOffsets(data2, dig_T1b, dig_T2b, dig_T3b, dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b)
 
-print "Sensor 1 Pressure: %.4f hPa ", p1
-print "Sensor 2 Pressure: %.4f hPa "p2
+print "Sensor 1 Pressure: %.4f hPa " %p1
+print "Sensor 2 Pressure: %.4f hPa " %p2
 
  #---------------------CALCULATING FLOWRATE ----------------------
 import math 
@@ -127,7 +127,8 @@ d2 = 0.0105
 a1 = (d1/2)**2*math.pi
 a2 = (d2/2)**2*math.pi
 v1 = math.sqrt((2*delta_p)/(density*(((a1/a2)**2)-1)))
-print "v1: %.4f hPa" %v1
+print "initial velocity: %.4f m/s" %v1
 f1 = v1*a1 # intial flowrate 
+print "flowrate: %.4f m^3/s" %f1
 
 
