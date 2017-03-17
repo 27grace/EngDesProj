@@ -57,10 +57,10 @@ def convertDataPressure(b1):
         dig_P9 -= 65536
     return dig_P1, dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9
     
-convertDataTemp(b1) = dig_T1a, dig_T2a, dig_T3a
-convertDataTemp(b2) = dig_T1b, dig_T2b, dig_T3b
-convertDataPressure(b1) = dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a
-convertDataPressure(b2) = dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b
+dig_T1a, dig_T2a, dig_T3a = convertDataTemp(b1) 
+dig_T1b, dig_T2b, dig_T3b = convertDataTemp(b2) 
+dig_P1a, dig_P2a, dig_P3a, dig_P4a, dig_P5a, dig_P6a, dig_P7a, dig_P8a, dig_P9a = convertDataPressure(b1) 
+dig_P1b, dig_P2b, dig_P3b, dig_P4b, dig_P5b, dig_P6b, dig_P7b, dig_P8b, dig_P9b = convertDataPressure(b2) 
  
 
 # BMP280 address, 0x76(118)
